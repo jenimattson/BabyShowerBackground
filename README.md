@@ -11,10 +11,17 @@ No server, no signups, no cost. It's a plain page hosted free by GitHub Pages.
 
 1. Go to your repo on GitHub &rarr; **Settings** &rarr; **Pages** (left sidebar).
 2. Under **Build and deployment** &rarr; **Source**, choose **Deploy from a branch**.
-3. Set the branch to `main` and the folder to `/ (root)`. Click **Save**.
+3. Pick the branch from the dropdown, set the folder to `/ (root)`, and click **Save**.
 4. Wait a minute, then refresh. GitHub shows you the live link, which will be:
 
    `https://jenimattson.github.io/BabyShowerBackground/`
+
+> **Which branch?** The repo started out empty, so the first branch pushed to it
+> became the default: `claude/github-zoom-background-picker-5kxx6j`. That works
+> fine, but if you'd rather it be called `main` (tidier, and it's what most
+> GitHub instructions assume), rename it first: **Settings** &rarr; **General**
+> &rarr; **Branches** &rarr; the pencil icon next to the branch name. Then pick
+> `main` in the Pages dropdown.
 
 Share that link and you're done. Anyone can open it — no GitHub account needed.
 
