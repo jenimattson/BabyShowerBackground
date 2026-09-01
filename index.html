@@ -46,15 +46,7 @@
   }
   .sub{color:var(--muted);margin:0;font-size:17px}
 
-  /* ---------- search + list ---------- */
-  .search{
-    display:block;width:100%;max-width:420px;margin:0 auto 26px;
-    padding:13px 18px;font:inherit;color:var(--ink);
-    background:var(--card);border:1px solid var(--line);border-radius:999px;
-    box-shadow:var(--shadow);
-  }
-  .search:focus{outline:2px solid var(--accent);outline-offset:2px}
-
+  /* ---------- name list ---------- */
   .names{
     list-style:none;padding:0;margin:0;
     display:grid;gap:10px;
@@ -75,7 +67,6 @@
     object-fit:cover;background:#e9eef4;
     border:1px solid rgba(38,54,78,.10);
   }
-  .empty{text-align:center;color:var(--muted);padding:26px 0}
 
   /* ---------- reveal ---------- */
   .reveal{
@@ -190,10 +181,7 @@
 
   <!-- LIST VIEW -->
   <section id="picker">
-    <input class="search" id="search" type="search" placeholder="Find your name…"
-           aria-label="Find your name" autocomplete="off">
     <ul class="names" id="names"></ul>
-    <p class="empty" id="noMatch" hidden>No name like that on the list — try a shorter search, or ask the host to add you.</p>
   </section>
 
   <!-- BOARD VIEW (only used when picking is switched on) -->
@@ -378,7 +366,6 @@
 
   /* --- Render the name list --------------------------------------- */
   var listEl   = document.getElementById("names");
-  var noMatch  = document.getElementById("noMatch");
   var pickerEl = document.getElementById("picker");
   var revealEl = document.getElementById("reveal");
 
@@ -387,7 +374,6 @@
     var b  = document.createElement("button");
     b.type = "button";
     b.dataset.id = slug(p.name);
-    b.dataset.search = p.name.toLowerCase();
 
     var sw = document.createElement("img");
     sw.className = "swatch";
@@ -417,17 +403,6 @@
     b.appendChild(label);
     li.appendChild(b);
     listEl.appendChild(li);
-  });
-
-  document.getElementById("search").addEventListener("input", function (e) {
-    var q = e.target.value.trim().toLowerCase();
-    var shown = 0;
-    Array.prototype.forEach.call(listEl.querySelectorAll("button"), function (b) {
-      var hit = !q || b.dataset.search.indexOf(q) !== -1;
-      b.parentNode.hidden = !hit;
-      if (hit) shown++;
-    });
-    noMatch.hidden = shown !== 0;
   });
 
   listEl.addEventListener("click", function (e) {

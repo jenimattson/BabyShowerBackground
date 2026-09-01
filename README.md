@@ -186,7 +186,6 @@ line and the page reverts to showing each person their claim.
   `…/BabyShowerBackground/?guest=alex-r` — it opens straight to their background.
   Text people their own link instead of making them hunt for their name. The
   **Copy my link** button on the page gets it for them.
-- **Search box**, for when the list gets long.
 - **Works on phones**, which is where most people will open it.
 - **Built-in Zoom instructions** for desktop and mobile, right under the image.
 
