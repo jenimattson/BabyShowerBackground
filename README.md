@@ -111,6 +111,75 @@ Keep the middle fairly plain &mdash; that's where the person's face goes.
 To delete an image, click it on GitHub and use the **&hellip;** menu &rarr; **Delete file**.
 Remember to remove its filename from `BACKGROUNDS` too.
 
+## Letting people pick their own (optional)
+
+Out of the box everyone gets a unique image that's already assigned to them.
+If you'd rather guests **choose** — and have an image lock the moment someone
+takes it, so nobody can end up with the same one — that needs one free service,
+because a GitHub Pages site can hand files out but can't take anything back.
+Every visitor's browser gets its own copy of the page, so "Kelly took the
+pirate" has to be written down somewhere all the browsers can see.
+
+Roughly five minutes, once:
+
+1. Go to **console.firebase.google.com** and sign in with a Google account.
+2. **Create a project**. Any name. Turn off Google Analytics when it offers —
+   you don't need it.
+3. In the left sidebar: **Build** &rarr; **Realtime Database** &rarr;
+   **Create Database**. Pick the region closest to you and choose
+   **Start in locked mode**.
+4. Open the **Rules** tab, replace what's there with this, and click **Publish**:
+
+   ```json
+   {
+     "rules": {
+       "claims": {
+         ".read": true,
+         "$image": {
+           ".write": "!data.exists()",
+           ".validate": "newData.hasChildren(['guestId', 'guestName'])"
+         }
+       }
+     }
+   }
+   ```
+
+   This is the bit that matters: `"!data.exists()"` means an image can be
+   claimed **only if nobody has claimed it yet**. The refusal happens on
+   Google's servers, so if two people tap the same picture in the same second,
+   one of them genuinely loses — the page tells them who beat them to it and
+   sends them back to choose again.
+
+5. Back on the **Data** tab, copy the URL at the top. It looks like
+   `https://your-project-default-rtdb.firebaseio.com`.
+6. Paste it into `guests.js`:
+
+   ```js
+   const FIREBASE = {
+     databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+   };
+   ```
+
+That's it. The page switches to picking on its own.
+
+**What guests see:** they tap their name, then a board of every background.
+Taken ones are greyed out and labelled with who has them. Tapping a free one
+claims it on the spot and shows them their image with the download button.
+The board refreshes every few seconds, so people watch it fill up.
+
+Jess is skipped past all of this — she goes straight to her skiing background,
+and it never appears on anyone else's board.
+
+**To undo a pick** (someone changed their mind, or claimed the wrong one), open
+the Firebase **Data** tab, find the entry under `claims`, and delete it. It
+frees up again immediately.
+
+**Worth knowing:** anyone with your page's link can claim an image — there's no
+sign-in. That's the right trade for a baby shower, and the rule above means the
+worst anyone can do is take an image, never overwrite someone else's. If you
+want the picking to stop (say, everyone has chosen), empty the `databaseURL`
+line and the page reverts to showing each person their claim.
+
 ## Nice things it already does
 
 - **Personal links.** Every guest has their own URL, e.g.

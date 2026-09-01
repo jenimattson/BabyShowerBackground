@@ -10,6 +10,20 @@
    from the pool, in order. Nobody shares. You just type names.
    ============================================================ */
 
+/* ------------------------------------------------------------------
+   LETTING PEOPLE PICK (optional)
+
+   Leave databaseURL empty and the page works exactly as it does now:
+   everyone gets a unique image, already assigned.
+
+   Fill it in and the page switches to picking: guests choose from the
+   images nobody has taken yet, and a claim is locked the instant it's
+   made. README.md walks through getting this URL -- about five minutes.
+   ------------------------------------------------------------------ */
+const FIREBASE = {
+  databaseURL: "",
+};
+
 const EVENT = {
   title: "Baby Shower",
   subtitle: "Pick your name to get your very own Zoom background",

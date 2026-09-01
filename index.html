@@ -127,6 +127,53 @@
   .warn ul{margin:0;padding-left:20px}
   .warn code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:5px}
 
+  /* ---------- claim board ---------- */
+  .boardhead{margin-bottom:20px}
+  .boardtitle{
+    font-family:Fraunces, Georgia, serif;font-weight:600;
+    font-size:clamp(24px,4.6vw,32px);margin:0 0 4px;line-height:1.15;
+  }
+  .boardsub{color:var(--muted);margin:0}
+
+  .plates{
+    list-style:none;padding:0;margin:0;display:grid;gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  }
+  .plate{
+    position:relative;width:100%;padding:0;cursor:pointer;font:inherit;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    overflow:hidden;box-shadow:var(--shadow);text-align:left;color:var(--ink);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .plate img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#e9eef4}
+  .plate .cap{display:block;padding:10px 14px 12px;font-weight:700;text-transform:capitalize}
+  .plate:hover:not(:disabled){transform:translateY(-3px);border-color:var(--accent)}
+  .plate:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .plate:disabled{cursor:default;box-shadow:none}
+  .plate:disabled img{filter:grayscale(.85) opacity(.42)}
+  .plate:disabled .cap{color:var(--muted)}
+  .taken{
+    position:absolute;left:12px;right:12px;top:calc(50% - 42px);
+    background:var(--ink);color:var(--card);border-radius:10px;
+    padding:8px 10px;text-align:center;font-size:13px;line-height:1.3;
+    box-shadow:0 6px 18px rgba(38,54,78,.28);
+  }
+  .taken b{display:block;font-size:15px}
+  .plate.mine{border-color:var(--accent);border-width:2px}
+  .plate.mine .taken{background:var(--accent)}
+
+  .linkish{
+    background:none;border:0;padding:0;font:inherit;color:var(--muted);
+    text-decoration:underline;cursor:pointer;
+  }
+  .linkish:hover{color:var(--accent)}
+
+  .flash{
+    background:#fdf3e0;border:1px solid #e6cb9c;color:#6f5322;
+    border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;
+  }
+
   [hidden]{display:none !important}
 </style>
 </head>
@@ -147,6 +194,17 @@
            aria-label="Find your name" autocomplete="off">
     <ul class="names" id="names"></ul>
     <p class="empty" id="noMatch" hidden>No name like that on the list — try a shorter search, or ask the host to add you.</p>
+  </section>
+
+  <!-- BOARD VIEW (only used when picking is switched on) -->
+  <section id="board" hidden>
+    <div class="boardhead">
+      <p class="assigned" id="boardWho"></p>
+      <h2 class="boardtitle">Choose your background</h2>
+      <p class="boardsub" id="boardCount"></p>
+    </div>
+    <ul class="plates" id="plates"></ul>
+    <p class="footnote"><button class="linkish" id="notMe2" type="button">I'm not the right person</button></p>
   </section>
 
   <!-- REVEAL VIEW -->
@@ -222,7 +280,9 @@
     if (!raw.length)  problems.push("<code>GUESTS</code> in <code>guests.js</code> is empty \u2014 add a line per person.");
 
     var people = raw.map(function (g) {
-      return (typeof g === "string") ? { name: g } : { name: g.name, background: g.background };
+      return (typeof g === "string")
+        ? { name: g }
+        : { name: g.name, background: g.background, pinned: !!g.background };
     }).filter(function (p) { return p.name && String(p.name).trim(); });
 
     // Reserve any hand-picked images first so auto-assign never collides.
@@ -431,9 +491,233 @@
     if (id && byId[id]) { show(id, false); } else { showPicker(false); }
   });
 
+  /* =================================================================
+     PICKING MODE
+     Switched on by FIREBASE.databaseURL in guests.js. Without it the
+     page keeps the assigned behaviour above and none of this runs.
+
+     Claims live at  <db>/claims/<image key>.json  as
+       { guestId, guestName, at }
+     The database rule ".write": "!data.exists()" means the SERVER
+     refuses a claim on an image that already has one, so two people
+     tapping the same picture at the same moment cannot both win --
+     the loser gets an error, not a silent overwrite.
+     ================================================================= */
+  var FB = (typeof FIREBASE !== "undefined" && FIREBASE) ? FIREBASE : {};
+  var PICKING = !!(FB.databaseURL && String(FB.databaseURL).trim());
+
+  var boardEl   = document.getElementById("board");
+  var platesEl  = document.getElementById("plates");
+  var claims    = {};          // image key -> {guestId, guestName}
+  var me        = null;        // the roster entry for this viewer
+  var ME_KEY    = "babyshower.guest";
+
+  function imgKey(src) {
+    return src.replace(/^.*\//, "").replace(/\.[^.]+$/, "");
+  }
+  function thumbOf(src) {
+    return src.replace(/^backgrounds\//, "backgrounds/thumbs/").replace(/\.[^.\/]+$/, ".jpg");
+  }
+  function dbUrl(path) {
+    return String(FB.databaseURL).replace(/\/+$/, "") + "/" + path + ".json";
+  }
+  function titleCase(k) { return k.charAt(0).toUpperCase() + k.slice(1); }
+
+  /* Images a guest may choose from: everything in the pool except the
+     ones pinned to a specific person (Jess's skier). */
+  function pickablePool() {
+    var pinned = {};
+    roster.forEach(function (p) { if (p.pinned) pinned[p.background] = true; });
+    return (HAS_BACKGROUNDS ? BACKGROUNDS : []).filter(function (b) { return !pinned[b]; });
+  }
+
+  function myClaim() {
+    if (!me) return null;
+    for (var k in claims) {
+      if (claims[k] && claims[k].guestId === me.id) return k;
+    }
+    return null;
+  }
+
+  function flash(msg) {
+    var el = document.getElementById("boardFlash");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "flash";
+      el.id = "boardFlash";
+      boardEl.insertBefore(el, boardEl.firstChild);
+    }
+    el.textContent = msg;
+    el.hidden = false;
+  }
+  function clearFlash() {
+    var el = document.getElementById("boardFlash");
+    if (el) el.hidden = true;
+  }
+
+  function renderBoard() {
+    var pool = pickablePool();
+    var mine = myClaim();
+    var free = pool.filter(function (b) { return !claims[imgKey(b)]; }).length;
+
+    document.getElementById("boardWho").textContent = me ? "Picking as " + me.name : "";
+    document.getElementById("boardCount").textContent = mine
+      ? "You've got the " + titleCase(mine) + ". Tap it again to see it full size."
+      : free + (free === 1 ? " background" : " backgrounds") + " still up for grabs.";
+
+    platesEl.textContent = "";
+    pool.forEach(function (src) {
+      var key   = imgKey(src);
+      var claim = claims[key];
+      var isMine = claim && me && claim.guestId === me.id;
+
+      var li = document.createElement("li");
+      var b  = document.createElement("button");
+      b.type = "button";
+      b.className = "plate" + (isMine ? " mine" : "");
+      b.disabled = !!claim && !isMine;
+      b.dataset.key = key;
+      b.dataset.src = src;
+
+      var im = document.createElement("img");
+      im.alt = ""; im.loading = "lazy"; im.decoding = "async";
+      im.onerror = function () { im.onerror = null; im.src = src; };
+      im.src = thumbOf(src);
+      b.appendChild(im);
+
+      var cap = document.createElement("span");
+      cap.className = "cap";
+      cap.textContent = titleCase(key);
+      b.appendChild(cap);
+
+      if (claim) {
+        var tag = document.createElement("span");
+        tag.className = "taken";
+        tag.innerHTML = (isMine ? "Yours" : "Taken by") + " <b>" +
+                        esc(isMine ? me.name : claim.guestName) + "</b>";
+        b.appendChild(tag);
+        b.setAttribute("aria-label",
+          titleCase(key) + (isMine ? " - yours" : " - taken by " + claim.guestName));
+      } else {
+        b.setAttribute("aria-label", "Claim the " + titleCase(key));
+      }
+      li.appendChild(b);
+      platesEl.appendChild(li);
+    });
+  }
+
+  function loadClaims() {
+    return fetch(dbUrl("claims"), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) { claims = data || {}; })
+      .catch(function () { /* keep whatever we last saw */ });
+  }
+
+  function claim(key, src) {
+    if (!me) return;
+    if (myClaim()) { flash("You've already picked one. Ask Jeni if you'd like to swap."); return; }
+
+    var body = JSON.stringify({ guestId: me.id, guestName: me.name, at: Date.now() });
+    fetch(dbUrl("claims/" + key), { method: "PUT", body: body })
+      .then(function (r) {
+        if (r.ok) return null;
+        // The rule refused it: somebody claimed this one first.
+        return loadClaims().then(function () { throw new Error("taken"); });
+      })
+      .then(function () {
+        claims[key] = { guestId: me.id, guestName: me.name };
+        clearFlash();
+        showClaimed(key, src);
+      })
+      .catch(function (e) {
+        renderBoard();
+        var who = claims[key] && claims[key].guestName;
+        flash(e && e.message === "taken"
+          ? (who ? who + " got the " + titleCase(key) + " a moment before you. Pick another one!"
+                 : "Someone just took that one. Pick another one!")
+          : "Couldn't save that pick - check your connection and try again.");
+      });
+  }
+
+  function showClaimed(key, src) {
+    var entry = { name: me.name, background: src, id: me.id };
+    byId[me.id] = entry;
+    show(me.id, true);
+  }
+
+  function openBoard() {
+    pickerEl.hidden = true;
+    revealEl.hidden = true;
+    boardEl.hidden = false;
+    window.scrollTo(0, 0);
+    renderBoard();
+  }
+
+  /* A guest who already holds a claim goes straight to their image. */
+  function routeGuest() {
+    if (!me) return;
+    if (me.pinned) { byId[me.id] = me; show(me.id, true); return; }
+    var mine = myClaim();
+    if (mine) {
+      showClaimed(mine, "backgrounds/" + mine + ".jpg");
+    } else {
+      openBoard();
+    }
+  }
+
+  if (PICKING) {
+    // In picking mode the front page asks who you are, nothing more.
+    roster.forEach(function (p) { p.id = slug(p.name); });
+
+    platesEl.addEventListener("click", function (e) {
+      var b = e.target.closest(".plate");
+      if (!b || b.disabled) return;
+      if (b.classList.contains("mine")) { showClaimed(b.dataset.key, b.dataset.src); return; }
+      claim(b.dataset.key, b.dataset.src);
+    });
+
+    document.getElementById("notMe2").addEventListener("click", function () {
+      try { localStorage.removeItem(ME_KEY); } catch (err) {}
+      me = null;
+      boardEl.hidden = true;
+      revealEl.hidden = true;
+      pickerEl.hidden = false;
+    });
+
+    // Choosing a name means "this is me", not "show me this person".
+    listEl.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      e.stopPropagation();
+      me = byId[b.dataset.id];
+      if (!me) return;
+      try { localStorage.setItem(ME_KEY, me.id); } catch (err) {}
+      loadClaims().then(routeGuest);
+    }, true);
+
+    document.getElementById("back").addEventListener("click", function (e) {
+      if (!me || me.pinned) return;
+      e.stopPropagation();
+      openBoard();
+    }, true);
+
+    loadClaims().then(function () {
+      var saved = null;
+      try { saved = localStorage.getItem(ME_KEY); } catch (err) {}
+      if (saved && byId[saved]) { me = byId[saved]; routeGuest(); }
+      else { renderBoard(); }
+    });
+
+    // Keep the board honest while it's open.
+    setInterval(function () {
+      if (boardEl.hidden) return;
+      loadClaims().then(renderBoard);
+    }, 6000);
+  }
+
   // Deep link: /?guest=alex-r opens straight to that person.
   var initial = new URLSearchParams(location.search).get("guest");
-  if (initial && byId[initial]) show(initial, false);
+  if (!PICKING && initial && byId[initial]) show(initial, false);
 })();
 </script>
 </body>
