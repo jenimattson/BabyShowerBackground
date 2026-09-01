@@ -20,28 +20,26 @@ const EVENT = {
    Add more files to the backgrounds/ folder, then add the
    filename here so there are at least as many images as guests. */
 const BACKGROUNDS = [
-  // --- the real ones ---
   "backgrounds/artist.jpg",
   "backgrounds/astronaut.jpg",
   "backgrounds/beachcomber.jpg",
   "backgrounds/beekeeper.jpg",
   "backgrounds/camper.jpg",
-
-  // --- placeholders, still filling the gaps until the rest are uploaded ---
-  // Delete these lines (and the matching files) once you have a real image
-  // for every guest.
-  "backgrounds/01-frost-cream.png",
-  "backgrounds/02-alpine-dusk.png",
-  "backgrounds/03-snowfall-ivory.png",
-  "backgrounds/04-glacier-slate.png",
-  "backgrounds/05-powder-linen.png",
-  "backgrounds/06-pine-mist.png",
-  "backgrounds/07-dawn-summit.png",
-  "backgrounds/08-indigo-drift.png",
-  "backgrounds/09-birch-blue.png",
-  "backgrounds/10-cobalt-cream.png",
-  "backgrounds/11-stonewash-oat.png",
-  "backgrounds/12-midnight-flurry.png",
+  "backgrounds/chef.jpg",
+  "backgrounds/climber.jpg",
+  "backgrounds/cowboy.jpg",
+  "backgrounds/dinosaur.jpg",
+  "backgrounds/duck.jpg",
+  "backgrounds/explorer.jpg",
+  "backgrounds/gardener.jpg",
+  "backgrounds/king.jpg",
+  "backgrounds/knitter.jpg",
+  "backgrounds/magician.jpg",
+  "backgrounds/mechanic.jpg",
+  "backgrounds/pirate.jpg",
+  "backgrounds/rockstar.jpg",
+  "backgrounds/sherlock.jpg",
+  "backgrounds/surfer.jpg",
 ];
 
 /* One line per person. Just the name is enough.
@@ -50,7 +48,7 @@ const BACKGROUNDS = [
 
    Want to hand-pick someone's image instead of letting it
    auto-assign? Write that line like this:
-     { name: "Priya S.", background: "backgrounds/06-lilac-blush.png" },
+     { name: "Priya S.", background: "backgrounds/pirate.jpg" },
 */
 const GUESTS = [
   // Jess gets the skiing one, pinned so it never gets handed to anyone else.

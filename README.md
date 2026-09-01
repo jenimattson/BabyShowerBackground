@@ -52,7 +52,7 @@ the next unused one.
 Want to hand-pick someone's image instead? Write their line like this:
 
 ```js
-  { name: "Priya S.", background: "backgrounds/06-pine-mist.png" },
+  { name: "Priya S.", background: "backgrounds/pirate.jpg" },
 ```
 
 **Jess is already pinned** to her skiing illustration, so she always gets that
@@ -98,7 +98,8 @@ Two ways through it:
   It rescales anything larger than 1920&times;1080, re-saves as JPEG, updates the
   matching filenames in `guests.js`, and writes small thumbnails into
   `backgrounds/thumbs/` for the name list. On this repo's images it took
-  2.2&nbsp;MB files down to about 240&nbsp;KB with no visible difference.
+  2.2&nbsp;MB files down to about 230&nbsp;KB with no visible difference —
+  50&nbsp;MB of art became 8&nbsp;MB.
 
 Size matters after the upload too: everyone opening the page loads a thumbnail
 for each guest, and most of them will be on a phone. Thumbnails keep that down
@@ -133,19 +134,6 @@ const EVENT = {
   hostNote: "See you on the call! 🍼",
 };
 ```
-
----
-
-## Regenerating the placeholders
-
-Only if you want more or different placeholder images:
-
-```bash
-pip install pillow
-python3 tools/make_placeholder_backgrounds.py
-```
-
-Edit the `PALETTES` list in that script to change the colors or add more.
 
 ---
 
