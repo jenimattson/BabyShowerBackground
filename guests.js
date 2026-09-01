@@ -39,6 +39,7 @@ const BACKGROUNDS = [
   "backgrounds/pirate.jpg",
   "backgrounds/rockstar.jpg",
   "backgrounds/sherlock.jpg",
+  "backgrounds/skier.jpg",
   "backgrounds/surfer.jpg",
 ];
 
@@ -52,20 +53,24 @@ const BACKGROUNDS = [
 */
 const GUESTS = [
   // Jess gets the skiing one, pinned so it never gets handed to anyone else.
-  // Upload it named skier.png and this lights up. (Any name works -- just
-  // match it here; the page names the file it can't find.)
   { name: "Jess", background: "backgrounds/skier.jpg" },
 
-  "Alex R.",
-  "Sam T.",
-  "Jordan K.",
-  "Priya S.",
-  "Miguel A.",
-  "Dana W.",
-  "Chris P.",
-  "Nadia H.",
-  "Tom B.",
-  "Yuki M.",
-  "Rachel G.",
-  "Omar F.",
+  "Alaa S.",
+  "Carol S.",
+  "Cierra G.",
+  "Debra M.",
+  "Jeni S.",
+  "Jennifer D.",
+  "Jenny W.",
+  "Jingyu L.",
+  "Kelly T.",
+  "Kesava K.",
+  "Leigh T.",
+  "Lisa H.",
+  "Mateo C.",
+  "Michelle H.",
+  "Richard G.",
+  "Usman K.",
+  "Weiyi S.",
+  "Xitong D.",
 ];
