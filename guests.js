@@ -20,6 +20,16 @@ const EVENT = {
    Add more files to the backgrounds/ folder, then add the
    filename here so there are at least as many images as guests. */
 const BACKGROUNDS = [
+  // --- the real ones ---
+  "backgrounds/artist.jpg",
+  "backgrounds/astronaut.jpg",
+  "backgrounds/beachcomber.jpg",
+  "backgrounds/beekeeper.jpg",
+  "backgrounds/camper.jpg",
+
+  // --- placeholders, still filling the gaps until the rest are uploaded ---
+  // Delete these lines (and the matching files) once you have a real image
+  // for every guest.
   "backgrounds/01-frost-cream.png",
   "backgrounds/02-alpine-dusk.png",
   "backgrounds/03-snowfall-ivory.png",
@@ -44,8 +54,9 @@ const BACKGROUNDS = [
 */
 const GUESTS = [
   // Jess gets the skiing one, pinned so it never gets handed to anyone else.
-  // Upload that file to backgrounds/ as jess-skiing.png and this lights up.
-  { name: "Jess", background: "backgrounds/jess-skiing.png" },
+  // Upload it named skier.png and this lights up. (Any name works -- just
+  // match it here; the page names the file it can't find.)
+  { name: "Jess", background: "backgrounds/skier.jpg" },
 
   "Alex R.",
   "Sam T.",

@@ -72,7 +72,7 @@
   .names button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .swatch{
     width:34px;height:34px;flex:0 0 34px;border-radius:10px;
-    background-size:cover;background-position:center;
+    object-fit:cover;background:#e9eef4;
     border:1px solid rgba(38,54,78,.10);
   }
   .empty{text-align:center;color:var(--muted);padding:26px 0}
@@ -199,6 +199,8 @@
   var HAS_GUESTS      = typeof GUESTS      !== "undefined" && Array.isArray(GUESTS);
   var HAS_EVENT       = typeof EVENT       !== "undefined" && EVENT !== null;
 
+  var BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
   function esc(t) {
     return String(t).replace(/[&<>"]/g, function (c) {
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c];
@@ -292,14 +294,16 @@
     roster.forEach(function (p) {
       if (p.background && srcs.indexOf(p.background) === -1) srcs.push(p.background);
     });
-    if (!srcs.length) return;
+    if (!srcs.length || typeof fetch !== "function") return;
 
+    /* HEAD, not a real load: asking for the whole image just to see whether it
+       exists would pull every background over the wire on first paint. */
     var missing = [], left = srcs.length;
     srcs.forEach(function (src) {
-      var probe = new Image();
-      probe.onload = function () { if (--left === 0) done(); };
-      probe.onerror = function () { missing.push(src); if (--left === 0) done(); };
-      probe.src = src;
+      fetch(src, { method: "HEAD" })
+        .then(function (r) { if (r.status === 404) missing.push(src); })
+        .catch(function () { /* offline or blocked: stay quiet rather than cry wolf */ })
+        .then(function () { if (--left === 0) done(); });
     });
 
     function done() {
@@ -325,9 +329,26 @@
     b.dataset.id = slug(p.name);
     b.dataset.search = p.name.toLowerCase();
 
-    var sw = document.createElement("span");
+    var sw = document.createElement("img");
     sw.className = "swatch";
-    if (p.background) sw.style.backgroundImage = 'url("' + p.background + '")';
+    sw.alt = "";
+    sw.loading = "lazy";
+    sw.decoding = "async";
+    if (p.background) {
+      // Prefer the small thumbnail if tools/optimize_backgrounds.py has made
+      // one; fall back to the full image when it hasn't.
+      var full = p.background;
+      sw.onerror = function () {
+        // thumbnail missing -> try the full image; if that's missing too,
+        // drop the src so the tile stays blank instead of showing a broken icon
+        // A cleared src still paints Chromium's broken-image glyph, so load a
+        // transparent pixel and let the tile's background colour show through.
+        sw.onerror = function () { sw.onerror = null; sw.src = BLANK_PIXEL; };
+        sw.src = full;
+      };
+      sw.src = full.replace(/^backgrounds\//, "backgrounds/thumbs/")
+                   .replace(/\.[^.\/]+$/, ".jpg");
+    }
 
     var label = document.createElement("span");
     label.textContent = p.name;

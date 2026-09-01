@@ -71,30 +71,44 @@ exact file. Nobody else sees it once it's fixed.
 
 ## 3. Use your own images
 
-The 12 images in `backgrounds/` are placeholders so the page works right away.
-They're tinted to match the illustrations — cream paper, alpine blues — but
-they're meant to be replaced. To use your real ones:
-
-1. On GitHub, open the `backgrounds/` folder &rarr; **Add file** &rarr; **Upload files**.
-2. Drag in your images (you can drop the whole batch at once) and **Commit changes**.
-3. In `guests.js`, list each filename in the `BACKGROUNDS` array.
+1. On GitHub, **click into the `backgrounds/` folder first**, then **Add file**
+   &rarr; **Upload files**. If you upload from the repo's front page instead, the
+   files land loose in the root and the page won't find them.
+2. Drag your images in and **Commit changes**.
+3. List each filename in the `BACKGROUNDS` array in `guests.js`.
 4. Make sure there are **at least as many images as guests**.
 
-Jess's file needs to be named exactly **`jess-skiing.png`** to match the line
-that's already pinned to her — or change that line to whatever you name it.
+### If the upload fails or stalls
 
-Short filenames with no spaces work best: `jess-skiing.png`, not
-`Baby Shower FINAL (2).png`. If a name doesn't match, the orange box on the page
-will tell you which file it couldn't find.
+That's a size problem, and it's fixable. GitHub's web uploader caps a single
+file at 25 MB and gets unreliable well before that across a whole batch.
+Illustrations straight out of an AI generator are commonly 2-6 MB each as PNG,
+so a dozen of them is 30-70 MB and the upload gives up.
 
-**What makes a good Zoom background:** 1920&times;1080 pixels (16:9), JPG or PNG,
-under about 2&nbsp;MB. Keep the middle fairly plain — that's where the person's
-face goes — and put the decoration around the edges.
+Two ways through it:
 
-To delete a placeholder, click it on GitHub and use the **&hellip;** menu &rarr; **Delete file**.
-Just remember to remove its filename from `BACKGROUNDS` too.
+- **Upload a few at a time.** Five or so per commit goes through fine.
+- **Shrink them first**, which is worth doing anyway:
 
----
+  ```bash
+  pip install pillow
+  python3 tools/optimize_backgrounds.py
+  ```
+
+  It rescales anything larger than 1920&times;1080, re-saves as JPEG, updates the
+  matching filenames in `guests.js`, and writes small thumbnails into
+  `backgrounds/thumbs/` for the name list. On this repo's images it took
+  2.2&nbsp;MB files down to about 240&nbsp;KB with no visible difference.
+
+Size matters after the upload too: everyone opening the page loads a thumbnail
+for each guest, and most of them will be on a phone. Thumbnails keep that down
+to a few kilobytes each instead of a few megabytes.
+
+**What makes a good Zoom background:** 16:9, JPG, ideally under 500&nbsp;KB.
+Keep the middle fairly plain &mdash; that's where the person's face goes.
+
+To delete an image, click it on GitHub and use the **&hellip;** menu &rarr; **Delete file**.
+Remember to remove its filename from `BACKGROUNDS` too.
 
 ## Nice things it already does
 
