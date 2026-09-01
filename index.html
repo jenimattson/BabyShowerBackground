@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baby Shower Zoom Backgrounds</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%BC%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Pick your name and get your own Zoom background for the baby shower.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fbf7f2;
+    --ink:#3d3630;
+    --muted:#7d726a;
+    --line:#e8ded3;
+    --card:#fffdfa;
+    --accent:#c98b8b;
+    --accent-ink:#8f5a5a;
+    --radius:18px;
+    --shadow:0 1px 2px rgba(61,54,48,.05), 0 8px 24px rgba(61,54,48,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font:16px/1.6 Karla, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:40px 20px 72px}
+
+  /* ---------- header ---------- */
+  header{text-align:center;margin-bottom:34px}
+  .eyebrow{
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:700;margin:0 0 10px
+  }
+  h1{
+    font-family:Fraunces, Georgia, "Times New Roman", serif;
+    font-weight:600;font-size:clamp(34px,7vw,54px);line-height:1.1;
+    margin:0 0 10px;
+  }
+  .sub{color:var(--muted);margin:0;font-size:17px}
+
+  /* ---------- search + list ---------- */
+  .search{
+    display:block;width:100%;max-width:420px;margin:0 auto 26px;
+    padding:13px 18px;font:inherit;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    box-shadow:var(--shadow);
+  }
+  .search:focus{outline:2px solid var(--accent);outline-offset:2px}
+
+  .names{
+    list-style:none;padding:0;margin:0;
+    display:grid;gap:10px;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  }
+  .names button{
+    width:100%;text-align:left;cursor:pointer;font:inherit;
+    display:flex;align-items:center;gap:12px;
+    padding:13px 16px;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--card);color:var(--ink);
+    box-shadow:var(--shadow);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .names button:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .names button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .swatch{
+    width:34px;height:34px;flex:0 0 34px;border-radius:10px;
+    background-size:cover;background-position:center;
+    border:1px solid rgba(61,54,48,.08);
+  }
+  .empty{text-align:center;color:var(--muted);padding:26px 0}
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    background:var(--card);border:1px solid var(--line);border-radius:26px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .reveal .hero img{display:block;width:100%;height:auto}
+  .reveal .body{padding:26px 26px 30px}
+  .assigned{
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:700;margin:0 0 6px;
+  }
+  .reveal h2{
+    font-family:Fraunces, Georgia, serif;font-weight:600;
+    font-size:clamp(26px,5vw,36px);margin:0 0 6px;line-height:1.15;
+  }
+  .reveal .oneof{color:var(--muted);margin:0 0 22px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+  .btn{
+    font:inherit;font-weight:700;cursor:pointer;text-decoration:none;
+    padding:12px 22px;border-radius:999px;border:1px solid transparent;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+
+  details.how{border-top:1px solid var(--line);padding-top:18px}
+  details.how summary{cursor:pointer;font-weight:700}
+  details.how summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  details.how ol{margin:14px 0 0;padding-left:20px;color:var(--muted)}
+  details.how li{margin-bottom:8px}
+  details.how li b{color:var(--ink)}
+
+  .footnote{text-align:center;color:var(--muted);margin-top:34px;font-size:15px}
+
+  /* ---------- host warnings ---------- */
+  .warn{
+    background:#fff6e8;border:1px solid #f0d9b5;border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:26px;color:#7a5a24;
+  }
+  .warn h3{margin:0 0 8px;font-size:15px}
+  .warn ul{margin:0;padding-left:20px}
+  .warn code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:5px}
+
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow" id="eyebrow">You're invited</p>
+    <h1 id="title">Baby Shower</h1>
+    <p class="sub" id="subtitle"></p>
+  </header>
+
+  <div class="warn" id="warnings" hidden></div>
+
+  <!-- LIST VIEW -->
+  <section id="picker">
+    <input class="search" id="search" type="search" placeholder="Find your name…"
+           aria-label="Find your name" autocomplete="off">
+    <ul class="names" id="names"></ul>
+    <p class="empty" id="noMatch" hidden>No name like that on the list — try a shorter search, or ask the host to add you.</p>
+  </section>
+
+  <!-- REVEAL VIEW -->
+  <section id="reveal" hidden>
+    <div class="reveal">
+      <div class="hero"><img id="revealImg" alt=""></div>
+      <div class="body">
+        <p class="assigned">Reserved for</p>
+        <h2 id="revealName"></h2>
+        <p class="oneof" id="revealOneOf"></p>
+
+        <div class="actions">
+          <a class="btn btn-primary" id="download" download>Download my background</a>
+          <button class="btn btn-ghost" id="copyLink" type="button">Copy my link</button>
+          <button class="btn btn-ghost" id="back" type="button">Not me</button>
+        </div>
+
+        <details class="how">
+          <summary>How to use it in Zoom</summary>
+          <ol>
+            <li>Tap <b>Download my background</b> above and save the image.</li>
+            <li>In Zoom, open <b>Settings</b> &rarr; <b>Backgrounds &amp; Effects</b>.
+              <br>On the phone app: join the call, tap <b>More</b> &rarr; <b>Background &amp; Effects</b>.</li>
+            <li>Click the <b>+</b> and choose <b>Add Image</b>.</li>
+            <li>Pick the file you just downloaded. That's it — you're set.</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+    <p class="footnote" id="hostNote"></p>
+  </section>
+
+</div>
+
+<script src="guests.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var problems = [];
+
+  // guests.js declares these with `const`. That lives in shared script scope
+  // (so a bare reference works) but never on `window` -- and `typeof` on a
+  // name that is missing entirely returns "undefined" instead of throwing,
+  // which keeps the page useful if guests.js fails to load.
+  var HAS_BACKGROUNDS = typeof BACKGROUNDS !== "undefined" && Array.isArray(BACKGROUNDS);
+  var HAS_GUESTS      = typeof GUESTS      !== "undefined" && Array.isArray(GUESTS);
+  var HAS_EVENT       = typeof EVENT       !== "undefined" && EVENT !== null;
+
+  function slug(name) {
+    return String(name).toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  /* --- Build the assignment table -------------------------------- */
+  function buildRoster() {
+    var pool = HAS_BACKGROUNDS ? BACKGROUNDS.slice() : [];
+    var raw  = HAS_GUESTS ? GUESTS : [];
+
+    if (!pool.length) problems.push("<code>BACKGROUNDS</code> in <code>guests.js</code> is empty \u2014 list your image files there.");
+    if (!raw.length)  problems.push("<code>GUESTS</code> in <code>guests.js</code> is empty \u2014 add a line per person.");
+
+    var people = raw.map(function (g) {
+      return (typeof g === "string") ? { name: g } : { name: g.name, background: g.background };
+    }).filter(function (p) { return p.name && String(p.name).trim(); });
+
+    // Reserve any hand-picked images first so auto-assign never collides.
+    var taken = {};
+    people.forEach(function (p) { if (p.background) taken[p.background] = true; });
+
+    var next = 0;
+    people.forEach(function (p) {
+      if (p.background) return;
+      while (next < pool.length && taken[pool[next]]) next++;
+      if (next < pool.length) { p.background = pool[next]; taken[pool[next]] = true; next++; }
+    });
+
+    // --- host-facing sanity checks ---
+    var short = people.filter(function (p) { return !p.background; });
+    if (short.length) {
+      problems.push(short.length + " guest(s) have no image left — add " + short.length +
+        " more file(s) to <code>backgrounds/</code> and list them in <code>BACKGROUNDS</code>: " +
+        short.map(function (p) { return p.name; }).join(", "));
+    }
+
+    var seenName = {}, dupNames = [];
+    people.forEach(function (p) {
+      var s = slug(p.name);
+      if (seenName[s]) { dupNames.push(p.name); } else { seenName[s] = true; }
+    });
+    if (dupNames.length) {
+      problems.push("Two guests share a name, so their links collide: " + dupNames.join(", ") +
+        ". Add a last initial to tell them apart.");
+    }
+
+    var seenImg = {}, dupImgs = [];
+    people.forEach(function (p) {
+      if (!p.background) return;
+      if (seenImg[p.background]) { dupImgs.push(p.background); } else { seenImg[p.background] = true; }
+    });
+    if (dupImgs.length) {
+      problems.push("These images are assigned to more than one guest: " + dupImgs.join(", "));
+    }
+
+    return people;
+  }
+
+  var roster = buildRoster();
+  var byId = {};
+  roster.forEach(function (p) { byId[slug(p.name)] = p; });
+
+  /* --- Header text ------------------------------------------------ */
+  var ev = HAS_EVENT ? EVENT : {};
+  if (ev.title) { document.getElementById("title").textContent = ev.title; document.title = ev.title + " — Zoom Backgrounds"; }
+  document.getElementById("subtitle").textContent = ev.subtitle || "";
+  document.getElementById("hostNote").textContent = ev.hostNote || "";
+
+  /* --- Warnings (only the host will ever hit these) --------------- */
+  if (problems.length) {
+    var w = document.getElementById("warnings");
+    w.innerHTML = "<h3>Heads up — a couple of things to fix in guests.js</h3><ul>" +
+      problems.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul>";
+    w.hidden = false;
+  }
+
+  /* --- Render the name list --------------------------------------- */
+  var listEl   = document.getElementById("names");
+  var noMatch  = document.getElementById("noMatch");
+  var pickerEl = document.getElementById("picker");
+  var revealEl = document.getElementById("reveal");
+
+  roster.forEach(function (p) {
+    var li = document.createElement("li");
+    var b  = document.createElement("button");
+    b.type = "button";
+    b.dataset.id = slug(p.name);
+    b.dataset.search = p.name.toLowerCase();
+
+    var sw = document.createElement("span");
+    sw.className = "swatch";
+    if (p.background) sw.style.backgroundImage = 'url("' + p.background + '")';
+
+    var label = document.createElement("span");
+    label.textContent = p.name;
+
+    b.appendChild(sw);
+    b.appendChild(label);
+    li.appendChild(b);
+    listEl.appendChild(li);
+  });
+
+  document.getElementById("search").addEventListener("input", function (e) {
+    var q = e.target.value.trim().toLowerCase();
+    var shown = 0;
+    Array.prototype.forEach.call(listEl.querySelectorAll("button"), function (b) {
+      var hit = !q || b.dataset.search.indexOf(q) !== -1;
+      b.parentNode.hidden = !hit;
+      if (hit) shown++;
+    });
+    noMatch.hidden = shown !== 0;
+  });
+
+  listEl.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (b) show(b.dataset.id, true);
+  });
+
+  /* --- Reveal ------------------------------------------------------ */
+  var imgEl  = document.getElementById("revealImg");
+  var dlEl   = document.getElementById("download");
+
+  function show(id, pushState) {
+    var p = byId[id];
+    if (!p || !p.background) return;
+
+    imgEl.src = p.background;
+    imgEl.alt = "Zoom background reserved for " + p.name;
+    document.getElementById("revealName").textContent = p.name;
+    document.getElementById("revealOneOf").textContent =
+      "This one is yours alone — no one else on the list has it.";
+
+    dlEl.href = p.background;
+    var ext = (p.background.split(".").pop() || "png").toLowerCase();
+    dlEl.setAttribute("download", "zoom-background-" + id + "." + ext);
+
+    pickerEl.hidden = true;
+    revealEl.hidden = false;
+    window.scrollTo(0, 0);
+
+    if (pushState) history.pushState({ id: id }, "", "?guest=" + encodeURIComponent(id));
+  }
+
+  function showPicker(pushState) {
+    revealEl.hidden = true;
+    pickerEl.hidden = false;
+    if (pushState) history.pushState({}, "", location.pathname);
+  }
+
+  document.getElementById("back").addEventListener("click", function () { showPicker(true); });
+
+  document.getElementById("copyLink").addEventListener("click", function () {
+    var btn = this, url = location.href;
+    var done = function () {
+      var was = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(function () { btn.textContent = was; }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, function () { window.prompt("Copy this link:", url); });
+    } else {
+      window.prompt("Copy this link:", url);
+    }
+  });
+
+  window.addEventListener("popstate", function () {
+    var id = new URLSearchParams(location.search).get("guest");
+    if (id && byId[id]) { show(id, false); } else { showPicker(false); }
+  });
+
+  // Deep link: /?guest=alex-r opens straight to that person.
+  var initial = new URLSearchParams(location.search).get("guest");
+  if (initial && byId[initial]) show(initial, false);
+})();
+</script>
+</body>
+</html>
