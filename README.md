@@ -52,24 +52,40 @@ the next unused one.
 Want to hand-pick someone's image instead? Write their line like this:
 
 ```js
-  { name: "Priya S.", background: "backgrounds/06-lilac-blush.png" },
+  { name: "Priya S.", background: "backgrounds/06-pine-mist.png" },
+```
+
+**Jess is already pinned** to her skiing illustration, so she always gets that
+one and it never goes to anybody else:
+
+```js
+  { name: "Jess", background: "backgrounds/jess-skiing.png" },
 ```
 
 If you make a mistake — more guests than images, a duplicate name, the same
-image given to two people — **the page tells you at the top in an orange box**
-when you open it. Nobody else will see it once it's fixed.
+image given to two people, or **a filename that isn't actually in the folder** —
+the page tells you at the top in an orange box when you open it, naming the
+exact file. Nobody else sees it once it's fixed.
 
 ---
 
 ## 3. Use your own images
 
 The 12 images in `backgrounds/` are placeholders so the page works right away.
-To use real ones:
+They're tinted to match the illustrations — cream paper, alpine blues — but
+they're meant to be replaced. To use your real ones:
 
-- Drop your images into the `backgrounds/` folder (on GitHub: **Add file** &rarr;
-  **Upload files**).
-- List each filename in the `BACKGROUNDS` array in `guests.js`.
-- Make sure there are **at least as many images as guests**.
+1. On GitHub, open the `backgrounds/` folder &rarr; **Add file** &rarr; **Upload files**.
+2. Drag in your images (you can drop the whole batch at once) and **Commit changes**.
+3. In `guests.js`, list each filename in the `BACKGROUNDS` array.
+4. Make sure there are **at least as many images as guests**.
+
+Jess's file needs to be named exactly **`jess-skiing.png`** to match the line
+that's already pinned to her — or change that line to whatever you name it.
+
+Short filenames with no spaces work best: `jess-skiing.png`, not
+`Baby Shower FINAL (2).png`. If a name doesn't match, the orange box on the page
+will tell you which file it couldn't find.
 
 **What makes a good Zoom background:** 1920&times;1080 pixels (16:9), JPG or PNG,
 under about 2&nbsp;MB. Keep the middle fairly plain — that's where the person's

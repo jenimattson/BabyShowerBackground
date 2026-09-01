@@ -14,18 +14,21 @@ W, H = 1920, 1080
 
 # name, top color, bottom color, accent color, motif
 PALETTES = [
-    ("blush-clouds",     (255, 230, 233), (255, 246, 240), (247, 190, 199), "clouds"),
-    ("mint-dots",        (222, 244, 233), (247, 252, 245), (163, 214, 189), "dots"),
-    ("sky-lavender",     (219, 235, 250), (238, 232, 247), (176, 200, 232), "bubbles"),
-    ("butter-peach",     (255, 244, 214), (255, 233, 224), (247, 205, 160), "confetti"),
-    ("sage-oat",         (226, 235, 221), (247, 243, 233), (172, 193, 165), "arches"),
-    ("lilac-blush",      (233, 226, 246), (255, 238, 240), (198, 182, 228), "stars"),
-    ("seafoam-sky",      (215, 242, 240), (226, 238, 250), (152, 208, 205), "waves"),
-    ("apricot-cream",    (255, 228, 209), (255, 248, 238), (245, 187, 145), "dots"),
-    ("periwinkle-cloud", (222, 228, 250), (243, 246, 253), (169, 182, 230), "clouds"),
-    ("rose-sand",        (250, 224, 224), (247, 238, 226), (232, 176, 176), "bubbles"),
-    ("pistachio-butter", (231, 241, 214), (255, 250, 227), (183, 206, 143), "confetti"),
-    ("dusty-blue-shell", (211, 228, 236), (248, 242, 238), (156, 187, 202), "arches"),
+    # Cream paper and alpine ink, to sit alongside the illustrated backgrounds.
+    # Kept deliberately spread across light/dark so the little swatches in the
+    # name list still read as twelve different backgrounds at 34px.
+    ("frost-cream",      (222, 235, 246), (252, 248, 239), (108, 146, 184), "clouds"),
+    ("alpine-dusk",      (180, 200, 226), (240, 236, 226), (58,  92,  138), "waves"),
+    ("snowfall-ivory",   (248, 244, 234), (233, 239, 245), (150, 172, 198), "dots"),
+    ("glacier-slate",    (188, 212, 227), (246, 241, 230), (58, 104, 138),  "arches"),
+    ("powder-linen",     (236, 242, 250), (250, 242, 228), (120, 152, 190), "confetti"),
+    ("pine-mist",        (204, 224, 222), (244, 242, 232), (66, 112, 108),  "bubbles"),
+    ("dawn-summit",      (248, 232, 220), (214, 226, 242), (176, 150, 156), "clouds"),
+    ("indigo-drift",     (196, 208, 236), (247, 243, 233), (48,  72,  132), "stars"),
+    ("birch-blue",       (232, 240, 244), (246, 236, 220), (92, 128, 154),  "waves"),
+    ("cobalt-cream",     (176, 198, 232), (250, 246, 236), (32,  70,  128), "dots"),
+    ("stonewash-oat",    (214, 222, 228), (246, 238, 222), (86, 112, 138),  "arches"),
+    ("midnight-flurry",  (166, 188, 220), (228, 234, 242), (28,  50,  98),  "confetti"),
 ]
 
 
@@ -139,7 +142,7 @@ def build(index, name, top, bottom, accent, motif):
     # lift the centre so faces read clearly
     center = soft_layer()
     ImageDraw.Draw(center).ellipse([W * 0.18, -H * 0.2, W * 0.82, H * 1.05],
-                                   fill=(255, 255, 255, 70))
+                                   fill=(255, 255, 255, 42))
     img.alpha_composite(center.filter(ImageFilter.GaussianBlur(180)))
 
     out = img.convert("RGB")

@@ -11,15 +11,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#fbf7f2;
-    --ink:#3d3630;
-    --muted:#7d726a;
-    --line:#e8ded3;
-    --card:#fffdfa;
-    --accent:#c98b8b;
-    --accent-ink:#8f5a5a;
+    /* Palette lifted from the illustrations: warm paper cream, deep ink navy,
+       and the soft slate blues of a snowy alpine watercolour. */
+    --cream:#f6efe3;
+    --ink:#26364e;
+    --muted:#6d7f96;
+    --line:#e2d8c6;
+    --card:#fffdf8;
+    --accent:#3f5f88;
+    --accent-ink:#26364e;
     --radius:18px;
-    --shadow:0 1px 2px rgba(61,54,48,.05), 0 8px 24px rgba(61,54,48,.07);
+    --shadow:0 1px 2px rgba(38,54,78,.06), 0 8px 24px rgba(38,54,78,.09);
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -71,7 +73,7 @@
   .swatch{
     width:34px;height:34px;flex:0 0 34px;border-radius:10px;
     background-size:cover;background-position:center;
-    border:1px solid rgba(61,54,48,.08);
+    border:1px solid rgba(38,54,78,.10);
   }
   .empty{text-align:center;color:var(--muted);padding:26px 0}
 
@@ -81,6 +83,10 @@
     box-shadow:var(--shadow);overflow:hidden;
   }
   .reveal .hero img{display:block;width:100%;height:auto}
+  .reveal .hero-missing{
+    margin:0;padding:64px 26px;text-align:center;color:var(--muted);
+    background:linear-gradient(180deg,#e9f0f6,#faf6ed);
+  }
   .reveal .body{padding:26px 26px 30px}
   .assigned{
     font-size:12px;letter-spacing:.16em;text-transform:uppercase;
@@ -114,8 +120,8 @@
 
   /* ---------- host warnings ---------- */
   .warn{
-    background:#fff6e8;border:1px solid #f0d9b5;border-radius:var(--radius);
-    padding:16px 18px;margin-bottom:26px;color:#7a5a24;
+    background:#fdf3e0;border:1px solid #e6cb9c;border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:26px;color:#6f5322;
   }
   .warn h3{margin:0 0 8px;font-size:15px}
   .warn ul{margin:0;padding-left:20px}
@@ -146,7 +152,10 @@
   <!-- REVEAL VIEW -->
   <section id="reveal" hidden>
     <div class="reveal">
-      <div class="hero"><img id="revealImg" alt=""></div>
+      <div class="hero">
+        <img id="revealImg" alt="">
+        <p class="hero-missing" id="heroMissing" hidden>This background is still being wrapped &mdash; check back shortly!</p>
+      </div>
       <div class="body">
         <p class="assigned">Reserved for</p>
         <h2 id="revealName"></h2>
@@ -190,6 +199,12 @@
   var HAS_GUESTS      = typeof GUESTS      !== "undefined" && Array.isArray(GUESTS);
   var HAS_EVENT       = typeof EVENT       !== "undefined" && EVENT !== null;
 
+  function esc(t) {
+    return String(t).replace(/[&<>"]/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c];
+    });
+  }
+
   function slug(name) {
     return String(name).toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -224,7 +239,7 @@
     if (short.length) {
       problems.push(short.length + " guest(s) have no image left — add " + short.length +
         " more file(s) to <code>backgrounds/</code> and list them in <code>BACKGROUNDS</code>: " +
-        short.map(function (p) { return p.name; }).join(", "));
+        short.map(function (p) { return esc(p.name); }).join(", "));
     }
 
     var seenName = {}, dupNames = [];
@@ -233,7 +248,7 @@
       if (seenName[s]) { dupNames.push(p.name); } else { seenName[s] = true; }
     });
     if (dupNames.length) {
-      problems.push("Two guests share a name, so their links collide: " + dupNames.join(", ") +
+      problems.push("Two guests share a name, so their links collide: " + dupNames.map(esc).join(", ") +
         ". Add a last initial to tell them apart.");
     }
 
@@ -243,7 +258,7 @@
       if (seenImg[p.background]) { dupImgs.push(p.background); } else { seenImg[p.background] = true; }
     });
     if (dupImgs.length) {
-      problems.push("These images are assigned to more than one guest: " + dupImgs.join(", "));
+      problems.push("These images are assigned to more than one guest: " + dupImgs.map(esc).join(", "));
     }
 
     return people;
@@ -260,12 +275,42 @@
   document.getElementById("hostNote").textContent = ev.hostNote || "";
 
   /* --- Warnings (only the host will ever hit these) --------------- */
-  if (problems.length) {
-    var w = document.getElementById("warnings");
-    w.innerHTML = "<h3>Heads up — a couple of things to fix in guests.js</h3><ul>" +
+  var warnEl = document.getElementById("warnings");
+
+  function renderWarnings() {
+    if (!problems.length) { warnEl.hidden = true; return; }
+    warnEl.innerHTML = "<h3>Heads up \u2014 a couple of things to fix in guests.js</h3><ul>" +
       problems.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul>";
-    w.hidden = false;
+    warnEl.hidden = false;
   }
+  renderWarnings();
+
+  /* Check every assigned file actually exists. Catches a typo\u2019d or
+     not-yet-uploaded filename by name, instead of a silent broken image. */
+  (function checkFilesExist() {
+    var srcs = [];
+    roster.forEach(function (p) {
+      if (p.background && srcs.indexOf(p.background) === -1) srcs.push(p.background);
+    });
+    if (!srcs.length) return;
+
+    var missing = [], left = srcs.length;
+    srcs.forEach(function (src) {
+      var probe = new Image();
+      probe.onload = function () { if (--left === 0) done(); };
+      probe.onerror = function () { missing.push(src); if (--left === 0) done(); };
+      probe.src = src;
+    });
+
+    function done() {
+      if (!missing.length) return;
+      missing.sort();
+      problems.push("These files are listed in <code>guests.js</code> but aren\u2019t in " +
+        "<code>backgrounds/</code> yet \u2014 upload them, or fix the spelling: " +
+        missing.map(function (m) { return "<code>" + esc(m) + "</code>"; }).join(", "));
+      renderWarnings();
+    }
+  })();
 
   /* --- Render the name list --------------------------------------- */
   var listEl   = document.getElementById("names");
@@ -310,13 +355,17 @@
   });
 
   /* --- Reveal ------------------------------------------------------ */
-  var imgEl  = document.getElementById("revealImg");
+  var imgEl      = document.getElementById("revealImg");
+  var missingEl  = document.getElementById("heroMissing");
   var dlEl   = document.getElementById("download");
 
   function show(id, pushState) {
     var p = byId[id];
     if (!p || !p.background) return;
 
+    imgEl.hidden = false;
+    missingEl.hidden = true;
+    imgEl.onerror = function () { imgEl.hidden = true; missingEl.hidden = false; };
     imgEl.src = p.background;
     imgEl.alt = "Zoom background reserved for " + p.name;
     document.getElementById("revealName").textContent = p.name;

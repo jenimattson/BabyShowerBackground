@@ -20,18 +20,18 @@ const EVENT = {
    Add more files to the backgrounds/ folder, then add the
    filename here so there are at least as many images as guests. */
 const BACKGROUNDS = [
-  "backgrounds/01-blush-clouds.png",
-  "backgrounds/02-mint-dots.png",
-  "backgrounds/03-sky-lavender.png",
-  "backgrounds/04-butter-peach.png",
-  "backgrounds/05-sage-oat.png",
-  "backgrounds/06-lilac-blush.png",
-  "backgrounds/07-seafoam-sky.png",
-  "backgrounds/08-apricot-cream.png",
-  "backgrounds/09-periwinkle-cloud.png",
-  "backgrounds/10-rose-sand.png",
-  "backgrounds/11-pistachio-butter.png",
-  "backgrounds/12-dusty-blue-shell.png",
+  "backgrounds/01-frost-cream.png",
+  "backgrounds/02-alpine-dusk.png",
+  "backgrounds/03-snowfall-ivory.png",
+  "backgrounds/04-glacier-slate.png",
+  "backgrounds/05-powder-linen.png",
+  "backgrounds/06-pine-mist.png",
+  "backgrounds/07-dawn-summit.png",
+  "backgrounds/08-indigo-drift.png",
+  "backgrounds/09-birch-blue.png",
+  "backgrounds/10-cobalt-cream.png",
+  "backgrounds/11-stonewash-oat.png",
+  "backgrounds/12-midnight-flurry.png",
 ];
 
 /* One line per person. Just the name is enough.
@@ -43,6 +43,10 @@ const BACKGROUNDS = [
      { name: "Priya S.", background: "backgrounds/06-lilac-blush.png" },
 */
 const GUESTS = [
+  // Jess gets the skiing one, pinned so it never gets handed to anyone else.
+  // Upload that file to backgrounds/ as jess-skiing.png and this lights up.
+  { name: "Jess", background: "backgrounds/jess-skiing.png" },
+
   "Alex R.",
   "Sam T.",
   "Jordan K.",
